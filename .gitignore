@@ -3,3 +3,11 @@ gen
 org.eclipse.jdt.core.prefs
 .idea
 out
+
+.classpath
+
+.project
+
+proguard-project.txt
+
+project.properties
