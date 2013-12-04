@@ -10,28 +10,31 @@ import android.view.animation.Transformation;
  */
 public class QuadraticBezierArcAnimation extends Animation {
 
-	private final int mFromXValue;
-	private final float mFromYValue;
+	private final int mEndXValue;
+	private final float mEndYValue;
 	private final int mMidXValue;
 	private final float mMidYValue;
-	private final int mToXValue;
-	private final float mToYValue;
+	private final int mStartXValue;
+	private final float mStartYValue;
 	private Point start;
 	private Point end;
 	private Point middle;
 
 	/**
-	 * A translation along an arc defined by three points and a Bezier Curve
+	 * A translation along an arc defined by three points and a Bezier Curve.
+	 *
+	 * Note 1: that the values are absolute pixels.
+	 * Note 2: the animated view should be positioned at the end of the arc.
 	 */
-	public QuadraticBezierArcAnimation(long duration, int fromXValue, float fromYValue, int midXValue, float midYValue, int toXValue, float toYValue) {
+	public QuadraticBezierArcAnimation(long duration, int endXValue, float endYValue, int midXValue, float midYValue, int startXValue, float startYValue) {
 		setDuration(duration);
 
-		mFromXValue = fromXValue;
-		mFromYValue = fromYValue;
+		mEndXValue = endXValue;
+		mEndYValue = endYValue;
 		mMidXValue = midXValue;
 		mMidYValue = midYValue;
-		mToXValue = toXValue;
-		mToYValue = toYValue;
+		mStartXValue = startXValue;
+		mStartYValue = startYValue;
 	}
 
 	/**
@@ -57,21 +60,21 @@ public class QuadraticBezierArcAnimation extends Animation {
 		float dx = calcBezier(interpolatedTime, start.x, middle.x, end.x);
 		float dy = calcBezier(interpolatedTime, start.y, middle.y, end.y);
 
-//		Log.d("debug", "applyTransformation t:" + interpolatedTime+ " dx: " + dx + " dy:" + dy);
 		t.getMatrix().setTranslate(dx, dy);
 	}
 
 	@Override
 	public void initialize(int width, int height, int parentWidth, int parentHeight) {
 		super.initialize(width, height, parentWidth, parentHeight);
-		int startX = Math.round(resolveSize(Animation.ABSOLUTE, mFromXValue, width, parentWidth));
-		int startY = Math.round(resolveSize(Animation.ABSOLUTE, mFromYValue, height, parentHeight));
-		int endX = Math.round(resolveSize(Animation.ABSOLUTE, mToXValue, width, parentWidth));
-		int endY = Math.round(resolveSize(Animation.ABSOLUTE, mToYValue, height, parentHeight));
+		int startX = Math.round(resolveSize(Animation.ABSOLUTE, mEndXValue, width, parentWidth));
+		int startY = Math.round(resolveSize(Animation.ABSOLUTE, mEndYValue, height, parentHeight));
+		int endX = Math.round(resolveSize(Animation.ABSOLUTE, mStartXValue, width, parentWidth));
+		int endY = Math.round(resolveSize(Animation.ABSOLUTE, mStartYValue, height, parentHeight));
 		int middleX = Math.round(resolveSize(Animation.ABSOLUTE, mMidXValue, width, parentWidth));
 		int middleY = Math.round(resolveSize(Animation.ABSOLUTE, mMidYValue, height, parentHeight));
 		end = new Point(0, 0);
-		start = new Point(endX- startX, endY - startY);
+		// Using relative positions
+		start = new Point(endX - startX, endY - startY);
 		middle = new Point(middleX - startX, middleY - startY);
 	}
 }
